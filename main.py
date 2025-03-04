@@ -4,13 +4,45 @@ import random
 import math
 from collections import deque
 
+# Set verbose mode for debug output
+VERBOSE = True
+
+# Log file path
+LOG_FILE = "game_debug.log"
+
+# Ensure log file is empty at the start of the game
+with open(LOG_FILE, "w") as f:
+    f.write("=== Game Debug Log ===\n")
+
+def debug_print(snake_id, algo, head, target, path, next_move, fallback=False):
+    log_entry = f"Snake {snake_id} ({algo}): Head = {head}\n"
+    log_entry += f"   Target Food: {target}\n"
+    
+    if path:
+        log_entry += f"   Computed path: {path}\n"
+    else:
+        log_entry += "   No valid path computed.\n"
+
+    if fallback:
+        log_entry += f"   Fallback move used: {next_move}\n"
+    else:
+        log_entry += f"   Next move: {next_move}\n"
+
+    # Print to console
+    if VERBOSE:
+        print(log_entry)
+
+    # Save to log file
+    with open(LOG_FILE, "a") as log_file:
+        log_file.write(log_entry + "\n")
+
 # Initialize Pygame
 pygame.init()
 
 # Set up display
 width, height = 500, 500
 win = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Snake Game with Multiple AIs')
+pygame.display.set_caption('Snake Game with Multiple AIs - Debug Mode')
 
 # Define colors
 black      = (0, 0, 0)
@@ -171,6 +203,19 @@ def get_random_valid_move(head, snakes):
         return random.choice(valid_moves)
     return head  # No valid moves available
 
+def debug_print(snake_id, algo, head, target, path, next_move, fallback=False):
+    if VERBOSE:
+        print(f"Snake {snake_id} ({algo}): Head = {head}")
+        print(f"   Target Food: {target}")
+        if path:
+            print(f"   Computed path: {path}")
+        else:
+            print("   No valid path computed.")
+        if fallback:
+            print(f"   Fallback move used: {next_move}")
+        else:
+            print(f"   Next move: {next_move}")
+
 def gameLoop():
     game_over = False
 
@@ -214,8 +259,12 @@ def gameLoop():
         path1 = a_star(head1, target_food, all_snakes)
         if path1:
             next_move = path1[0]
+            debug_print(1, "A*", head1, target_food, path1, next_move)
+            fallback_used = False
         else:
             next_move = get_random_valid_move(head1, all_snakes)
+            debug_print(1, "A*", head1, target_food, None, next_move, fallback=True)
+            fallback_used = True
         if next_move != head1:
             ai1.insert(0, next_move)
             if next_move in food_positions:
@@ -244,8 +293,12 @@ def gameLoop():
         path2 = dijkstra(head2, target_food, all_snakes)
         if path2:
             next_move = path2[0]
+            debug_print(2, "Dijkstra", head2, target_food, path2, next_move)
+            fallback_used = False
         else:
             next_move = get_random_valid_move(head2, all_snakes)
+            debug_print(2, "Dijkstra", head2, target_food, None, next_move, fallback=True)
+            fallback_used = True
         if next_move != head2:
             ai2.insert(0, next_move)
             if next_move in food_positions:
@@ -273,6 +326,8 @@ def gameLoop():
         directions = [(0, -snake_block), (0, snake_block), (-snake_block, 0), (snake_block, 0)]
         random_direction = random.choice(directions)
         next_move = (head3[0] + random_direction[0], head3[1] + random_direction[1])
+        if VERBOSE:
+            print(f"Snake 3 (Random): Head = {head3}, Random direction = {random_direction}, Next move = {next_move}")
         if (0 <= next_move[0] < width and 0 <= next_move[1] < height and
                 all(next_move not in snake for snake in [ai1, ai2, ai4, ai5]) and next_move != head3):
             ai3.insert(0, next_move)
@@ -302,8 +357,12 @@ def gameLoop():
         path4 = bfs(head4, target_food, all_snakes)
         if path4:
             next_move = path4[0]
+            debug_print(4, "BFS", head4, target_food, path4, next_move)
+            fallback_used = False
         else:
             next_move = get_random_valid_move(head4, all_snakes)
+            debug_print(4, "BFS", head4, target_food, None, next_move, fallback=True)
+            fallback_used = True
         if next_move != head4:
             ai4.insert(0, next_move)
             if next_move in food_positions:
@@ -332,8 +391,12 @@ def gameLoop():
         path5 = greedy_bfs(head5, target_food, all_snakes)
         if path5:
             next_move = path5[0]
+            debug_print(5, "Greedy BFS", head5, target_food, path5, next_move)
+            fallback_used = False
         else:
             next_move = get_random_valid_move(head5, all_snakes)
+            debug_print(5, "Greedy BFS", head5, target_food, None, next_move, fallback=True)
+            fallback_used = True
         if next_move != head5:
             ai5.insert(0, next_move)
             if next_move in food_positions:

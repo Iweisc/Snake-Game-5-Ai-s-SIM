@@ -30,7 +30,7 @@ def setup_logging():
 
 # Pygame and game setup
 pygame.init()
-width, height = 1000, 1000
+width, height = 1000, 700
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Snake Game with Multiple AIs')
 
@@ -288,20 +288,7 @@ def gameLoop():
         pygame.display.update()
         clock.tick(snake_speed)
 
-        # Optional: Add a game length limit
-        if game_iterations > 5000:
-            logging.warning("Game reached maximum iteration limit")
-            game_over = True
 
-    # Game over logging
-    logging.info("Game ended")
-    logging.info("Final Scores:")
-    for id, snake in snake_data.items():
-        logging.info(f"{snake['algorithm']} Snake - Score: {snake['score']}, Length: {snake['length']}")
-    
-    # Close Pygame
-    pygame.quit()
-    
     # Log location of the log file
     print(f"Game log saved to: {log_filename}")
     

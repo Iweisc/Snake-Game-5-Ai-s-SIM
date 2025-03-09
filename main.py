@@ -54,7 +54,7 @@ jackpot_purple = (153, 50, 204)
 
 # Configure Slither.io style settings
 snake_block = 10
-snake_speed = 30  # Increased for smoother movement
+snake_speed = 60  # Increased for smoother and faster movement (was 30)
 segment_spacing = 5  # Spacing between segments for smoother appearance
 font_style = pygame.font.SysFont("bahnschrift", 20)
 score_font = pygame.font.SysFont("segoeui", 30)
@@ -235,7 +235,7 @@ class Snake:
         self.speed_boost = 0
         self.target_indicator = None
         self.alive = True
-        self.speed = 2.0  # Base speed
+        self.speed = 4.0  # Base speed (increased from 2.0 to make snakes faster)
         self.boost_available = 100  # Boost meter (0-100)
         self.boosting = False
         self.radius = snake_block // 2  # Base segment size
@@ -276,7 +276,7 @@ class Snake:
             dx /= distance
             dy /= distance
         # Update direction gradually (smooth turning)
-        turn_rate = 0.15
+        turn_rate = 0.2  # Increased turn rate from 0.15 for faster response
         self.direction[0] = self.direction[0] * (1-turn_rate) + dx * turn_rate
         self.direction[1] = self.direction[1] * (1-turn_rate) + dy * turn_rate
         # Normalize direction again
@@ -287,7 +287,7 @@ class Snake:
         # Calculate current speed
         current_speed = self.speed
         if self.boosting and self.boost_available > 0:
-            current_speed *= 1.7  # 70% speed boost
+            current_speed *= 1.8  # Increased boost from 1.7 to 1.8 (80% boost)
             self.boost_available -= 1
         elif not self.boosting and self.boost_available < 100:
             self.boost_available += 0.2  # Recharge boost

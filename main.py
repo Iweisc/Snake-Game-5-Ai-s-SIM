@@ -1499,11 +1499,11 @@ def gameLoop():
                         random.choice(alive_snakes).set_boost(True)
                 # Betting controls: select snake (1-5)
                 elif event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
-                    snake_num = int(event.unicode)
-                    if 1 <= snake_num <= 5:
-                        selected_snake_id = snake_num
-                        if any(s.algorithm_id == selected_snake_id and s.alive for s in snakes):
-                            logging.info(f"Selected snake {snake_num} for betting")
+                    # Map the key directly to the snake number (1-5)
+                    snake_num = event.key - pygame.K_1 + 1
+                    selected_snake_id = snake_num
+                    if any(s.algorithm_id == selected_snake_id and s.alive for s in snakes):
+                        logging.info(f"Selected snake {snake_num} for betting")
                 # Adjust bet amount
                 elif event.key == pygame.K_UP:
                     bet_amount = min(player_coins, bet_amount + 50)
